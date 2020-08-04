@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.batista.event.RecursoCriadoEvent;
 import com.batista.model.Lancamento;
+import com.batista.projection.LancamentoResumo;
 import com.batista.repository.LancamentoFilter;
 import com.batista.repository.LancamentoRepository;
 import com.batista.service.LancamentoService;
@@ -47,17 +48,23 @@ public class LancamentoResource {
 		return !lancamentos.isEmpty() ? ResponseEntity.ok(lancamentos) : ResponseEntity.noContent().build();
 	}
 	
-	// listagem p/ pesquisa, passando filtros
+	// listagem p/ pesquisa, passando filtros por critério de descrição, data de vencimento "de" e "até"
 	@GetMapping("/pesquisar")
 	public  List<Lancamento> pesquisar(LancamentoFilter filter) {
 		return this.repository.filtrar(filter);
 	}
 	
-	// sm ao anterior, lista c/ possibilidade de passar filtros e tb paginação
-	@GetMapping("paginacao")
+	// sm ao anterior, lista c/ possibilidade de passar, além dos filtros,  tb paginação
+	@GetMapping("/paginacao")
 	public Page<Lancamento> paginacao(LancamentoFilter filter, Pageable pageable) {
 		return this.repository.filtroComPaginacao(filter, pageable);
 	}
+	
+	@GetMapping(path="/paginacao", params="resumo") // se tiver o param resumo ele executa esse método em vez do de cima
+	public Page<LancamentoResumo> resumir(LancamentoFilter filter, Pageable pageable) {
+		return this.repository.resumir(filter, pageable);
+	}
+	
 	
 	// retorna um lancamento pelo codigo
 	@GetMapping("/{codigo}")
@@ -81,6 +88,7 @@ public class LancamentoResource {
     	return ResponseEntity.status(HttpStatus.CREATED).body(lancamentoSalvo);
     }
     
+    // apagando lançamentos pelo código
     @DeleteMapping("/{codigo}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void apagarLancamento(@PathVariable Long codigo) {

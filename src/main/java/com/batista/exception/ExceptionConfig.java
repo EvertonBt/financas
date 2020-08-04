@@ -24,7 +24,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 // classe q captura as execções, retonando uma msg amigável
-@ControllerAdvice // ou @RestContollerAdvice
+@ControllerAdvice // ou @RestContollerAdvice, esse advice indica q ele é um tipo de  controlador q enxerga toda a aplicação
 public class ExceptionConfig extends ResponseEntityExceptionHandler {
 
 	// esse recurso está definido no arquivo message.properties c/ a mensagens de
@@ -33,7 +33,7 @@ public class ExceptionConfig extends ResponseEntityExceptionHandler {
 	private MessageSource messageSource;
 
 	// captura a msg de erro Bad Request 400, qnd o cliente passa uma atributo
-	// inexiste q ele ñ consegue ler
+	// inexistente q ele ñ consegue ler
 	@Override
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -64,7 +64,7 @@ public class ExceptionConfig extends ResponseEntityExceptionHandler {
 		return handleExceptionInternal(ex, erros, headers, HttpStatus.BAD_REQUEST, request);
 	}
 
-// gera a lista de erros p/ exibição, usada pelo método acima
+// gera a lista de erros p/ exibição, usada pelo método acima; o bindResult guarda a lista d erros gerados pelo BeanValidation
 	private List<Erro> criaListaDeErros(BindingResult bindingResult) {
 		List<Erro> erros = new ArrayList<>();
 		// cpatura os erros através do binding result e monta uma lista de erros c/ as

@@ -21,8 +21,8 @@ public class PessoaService {
 	public Pessoa atualizarPessoa(Long codigo, Pessoa pessoa) {
 
 		Pessoa pessoaSalva = this.buscarPessoaPorCodigo(codigo);
-		// copia os dados do objeto pessoa passado no objeto pessoaSalva do BD, exceto o
-		// código q já está definido corretamente
+		// o BeanUtils  copia os dados do objeto pessoa passado no objeto pessoaSalva do BD, exceto o
+		// código q já está definido corretamente (note q assim vc ñ precisa setar cada atributo individualmente):
 		BeanUtils.copyProperties(pessoa, pessoaSalva, "codigo");
 		return this.repository.save(pessoaSalva);
 	}

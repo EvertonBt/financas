@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,6 +39,8 @@ public class CategoriaResource {
 	
 	// faz listagem, mas dessa forma ele vai retornar um array vazio [] caso ñ exista dados
 	@GetMapping
+	// define autorização por metodo, indivualmente, tem precedencia sobre o "permitAll" definica na classe ResourceServerConfig
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA') and #oauth2.hasScope('read')") 
 	public List<Categoria> listar() {
 		return this.repository.findAll(); 
 	
@@ -53,6 +56,7 @@ public class CategoriaResource {
     
     // salvando a categoria
     @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_CADASTRAR_CATEGORIA') and #oauth2.hasScope('write')")
   //  @ResponseStatus(HttpStatus.CREATED)  retorna o 201 created caso dê certo, ao usar o ResponseEntivy ñ é necessário
     public ResponseEntity<Categoria> criar(@Valid @RequestBody Categoria categoria, HttpServletResponse response) {
     	Categoria categoriaSalva = this.repository.save(categoria);
@@ -67,6 +71,7 @@ public class CategoriaResource {
     
     // Buscando categoria pelo codigo
     @GetMapping("/{codigo}")
+    @PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA') and #oauth2.hasScope('read')")
     public ResponseEntity<Categoria> buscarPeloCodigo(@PathVariable Long codigo) {
     	Optional<Categoria> optional =  this.repository.findById(codigo);
     	if(optional.isPresent()) {

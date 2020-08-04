@@ -77,7 +77,7 @@ public class PessoaResource {
 	// Atualiza parciamente somente o campo ativo
 	/*
 	 - se der certo e atualizar o campo "ativo" ele retorna 204 no content
-	 - se pssar codigo inexistente na url ele lança EmptyResultDataAccessExceptionretorna  q ao ser tratada emite 404 not found
+	 - se passar codigo inexistente na url ele lança EmptyResultDataAccessExceptio nretorna  q ao ser tratada emite 404 not found
 	 - se passar um tipo de dado inválido no json p/ o campo ativo q só aceita booelan ele emite um 400 Bad Request
 	 - se passar null ou nada no json p/ o campo ativo ele invoca HttpMessageNotReadableException q ao ser tratada emite 400 BAD request
 	 

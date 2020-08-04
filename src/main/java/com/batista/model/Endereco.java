@@ -2,8 +2,8 @@ package com.batista.model;
 
 import javax.persistence.Embeddable;
 
-@Embeddable // faz essa classe ser gerada c/ parte da tabela pessoa, por isso ñ há ch primária
-public class Endereco {
+@Embeddable // faz essa classe ser gerada c/ parte da tabela pessoa (ñ é um tabela separada), por isso ñ há ch primária
+public class Endereco { 
 
 	// todos os atributos de endereço são opcionais, por isso ñ há validação
 		private String logradouro;

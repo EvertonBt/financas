@@ -51,7 +51,4 @@ target/
 /.nb-gradle/
 build/
 
-### Maven ###
-.mvn/
-mvnw
-mvnw.cmd
+
