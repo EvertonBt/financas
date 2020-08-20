@@ -36,7 +36,6 @@ public class PessoaService {
 	}
    
 
-	
 	private Pessoa buscarPessoaPorCodigo(Long codigo) {
 		// busca a pessoa salva no BD pelo codigo informado, ele retorna um optional,
 		// tem q usar o get() p/ retornar uma Pessoa

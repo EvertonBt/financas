@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,12 +38,20 @@ public class PessoaResource {
 	@Autowired
 	private PessoaService service;
 	
+	// listagem de pessoas sem paginação
 	@GetMapping
 	public ResponseEntity<?> listar(){
 		List<Pessoa> pessoas = this.repository.findAll();
 		return !pessoas.isEmpty() ? ResponseEntity.ok(pessoas) : ResponseEntity.noContent().build();
 	}
 	
+	// listagem p/ pesquisa c/ paginação e filtro usando o critério de nome
+	@GetMapping(params="nome")
+	public Page<Pessoa> resumir(String nome, Pageable pageable) {
+		return this.repository.findByNomeContaining(nome, pageable);
+	}
+	
+	// salva uma nova pessoa
 	@PostMapping
 	public ResponseEntity<Pessoa> criar(@Valid @RequestBody Pessoa pessoa, HttpServletResponse response) {
 	    Pessoa pessoaSalva = this.repository.save(pessoa);
@@ -56,6 +66,8 @@ public class PessoaResource {
 		
 	}
 	
+	
+	// pesquisa pessoa especifica pelo codigo
 	@GetMapping("/{codigo}")
 	public ResponseEntity<Pessoa> buscarPessoaPorCodigo(@PathVariable Long codigo) {
 		Optional<Pessoa> op = this.repository.findById(codigo);

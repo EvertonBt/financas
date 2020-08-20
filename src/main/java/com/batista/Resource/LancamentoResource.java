@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -88,6 +89,19 @@ public class LancamentoResource {
     	return ResponseEntity.status(HttpStatus.CREATED).body(lancamentoSalvo);
     }
     
+    // Atualiza Lançamento (ao atualizr o lançamento vc passa os dados do lançamento de quer modificar, mas o da pessoa vc passa somente
+    //o código da pessoa c/ quem vc quer q o lancamento se relacione
+    @PutMapping("/{codigo}")
+    public ResponseEntity<Lancamento> atualizar(@PathVariable Long codigo, @Valid @RequestBody Lancamento lancamento) {    	
+    	try {
+    		Lancamento lancamentoSalvo = this.service.atualizaLancamento(codigo, lancamento);
+    		return ResponseEntity.ok(lancamentoSalvo);
+    	} catch(IllegalArgumentException ex) {
+    		return ResponseEntity.notFound().build();
+    	}
+    }
+    
+
     // apagando lançamentos pelo código
     @DeleteMapping("/{codigo}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

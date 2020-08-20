@@ -1,18 +1,26 @@
 package com.batista.config;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
+import org.springframework.security.oauth2.provider.token.TokenEnhancer;
+import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
+import com.batista.token.CustomTokenEnhancer;
+
+@Profile("oauth-security")
 @Configuration
 @EnableAuthorizationServer
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
@@ -41,13 +49,21 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	// esses 3 métodos abaixo ativam o jwt p/ ser usado junto c/ o oauth
 	@Override
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+		// permite adicionar info c/ o nome do usuário logado
+		TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
+		tokenEnhancerChain.setTokenEnhancers(Arrays.asList(tokenEnhancer(), accessTokenConverter()));
+		
 		endpoints
 			.tokenStore(tokenStore())
-			.accessTokenConverter(accessTokenConverter())
+			.tokenEnhancer(tokenEnhancerChain)
 			.reuseRefreshTokens(false) // faz c/ q a medida q o refresh token esteja sendo constantemente usado ele nunca expire
 			.authenticationManager(authenticationManager);
 	}
 	
+
+	private TokenEnhancer tokenEnhancer() {
+	    return new CustomTokenEnhancer();
+	}
 
 	@Bean
 	public JwtAccessTokenConverter accessTokenConverter() {
